@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.william.www.thestock.R;
+import com.william.www.thestock.SharedPreferencesHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +35,7 @@ public class asset extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private String id;
     private Login.CallBackValue callBackValue;
 
 
@@ -74,6 +76,7 @@ public class asset extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_asset, container, false);
+
         return v;
     }
     @Override
@@ -82,7 +85,10 @@ public class asset extends Fragment {
         String url="http://47.93.227.240:8080/SSMDemo/billt/userBill.action";
 
         final RequestParams requestParams=new RequestParams(url);
-        requestParams.addBodyParameter("uid","13");
+        SharedPreferencesHelper share = new SharedPreferencesHelper();
+        String id = share.getValue(getContext(),"shared","id","");
+        System.out.println(id);
+        requestParams.addBodyParameter("uid",id);
 
                 //xutils网络连接执行的核心方法，相对于当前Activity类主线程操作的子线程
         x.http().post(requestParams, new Callback.CommonCallback<String>() {

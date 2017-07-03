@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.william.www.thestock.R;
+import com.william.www.thestock.SharedPreferencesHelper;
 
 import org.w3c.dom.Text;
 
@@ -30,6 +31,7 @@ public class SelfInfo extends Fragment implements OnClickListener {
     private TextView textView1;
     private TextView textView2;
     private TextView textView3;
+    private TextView textView4;
     private FragmentManager fm;
     private FragmentTransaction ft;
 
@@ -76,7 +78,12 @@ public class SelfInfo extends Fragment implements OnClickListener {
         textView1 = (TextView) v.findViewById(R.id.xinxi);
         textView2 = (TextView) v.findViewById(R.id.asset);
         textView3 = (TextView) v.findViewById(R.id.chanpsw);
-
+        textView4 = (TextView) v.findViewById(R.id.textView5);
+        SharedPreferencesHelper share = new SharedPreferencesHelper();
+        String name = share.getValue(getContext(),"shared","name","");
+        System.out.println("1111111111");
+        System.out.println(name);
+        textView4.setText(name);
         //System.out.println(textView1.getText());
         textView1.setOnClickListener(this);
         textView2.setOnClickListener(this);

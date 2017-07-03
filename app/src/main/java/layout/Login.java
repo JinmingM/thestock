@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.william.www.thestock.MainActivity;
+import com.william.www.thestock.SharedPreferencesHelper;
 import com.william.www.thestock.R;
 
 import org.json.JSONException;
@@ -109,7 +110,9 @@ public class Login extends Fragment {
                             username.setText(userinfo.getString("name"));
                             callBackValue.SendMessageValue(userinfo.getString("id"),userinfo.getString("name"));
                             //System.out.println(userinfo.getString("name"));
-
+                            SharedPreferencesHelper share = new SharedPreferencesHelper();
+                            share.putValue(getContext(),"shared","name",userinfo.getString("name"));
+                            share.putValue(getContext(),"shared","id",userinfo.getString("id"));
                             //跳转回主页
                             ft = manager.beginTransaction();
                             ft.replace(R.id.main_container, StockInfo.newInstance());

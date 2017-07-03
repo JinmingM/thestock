@@ -1,9 +1,13 @@
 package layout;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -13,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.william.www.thestock.R;
+import com.william.www.thestock.SharedPreferencesHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +36,7 @@ public class infor extends Fragment implements TextWatcher {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private EditText editText0;
     private EditText editText1;
     private EditText editText2;
     private EditText editText3;
@@ -40,6 +46,8 @@ public class infor extends Fragment implements TextWatcher {
     private String sex="";
     private String sign="";
     private String work="";
+    private FragmentManager fm;
+    private FragmentTransaction ft;
 
 
     public infor() {
@@ -78,12 +86,13 @@ public class infor extends Fragment implements TextWatcher {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_infor, container, false);
-        EditText editText0 =(EditText)view.findViewById(R.id.name);
+        editText0 =(EditText)view.findViewById(R.id.name);
         editText1 =(EditText)view.findViewById(R.id.age);
         editText2 =(EditText)view.findViewById(R.id.sex);
         editText3 =(EditText)view.findViewById(R.id.sign);
         editText4 =(EditText)view.findViewById(R.id.work);
-        name = editText0.getText().toString();
+        SharedPreferencesHelper share = new SharedPreferencesHelper();
+        name = share.getValue(getContext(),"shared","name","");
         getinfo(name);
 
         //System.out.println(name+"   "+sex+"   "+work+"   "+sign);
@@ -101,9 +110,26 @@ public class infor extends Fragment implements TextWatcher {
             public void onClick(View view) {
                 //System.out.println(name+"   "+sex+"   "+work+"   "+sign);
                 changeinfo(name,age,sex,work,sign);
+                dialog();
             }
         });
         return view;
+    }
+    protected void dialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("信息修改成功");
+        builder.setTitle("提示");
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                fm = getFragmentManager();
+                ft = fm.beginTransaction();
+                ft.replace(R.id.main_container,new infor());
+                ft.commit();
+            }
+        });
+        builder.create().show();
     }
     private void delay(int ms){
         try {
@@ -115,7 +141,7 @@ public class infor extends Fragment implements TextWatcher {
     }
     public void getinfo(String name1)
     {
-        String url="http://10.2.228.208:8080/SSMDemo/usert/getinfo.action";
+        String url="http://47.93.227.240:8080/SSMDemo/usert/getinfo.action";
 
         final RequestParams requestParams=new RequestParams(url);
         requestParams.addBodyParameter("uname",name1);
@@ -126,13 +152,14 @@ public class infor extends Fragment implements TextWatcher {
 
                 try {
                     JSONObject userinfo=new JSONObject(result);
-                    System.out.println(userinfo);
+                    //System.out.println(userinfo);
                     name = userinfo.getString("name");
                     age = userinfo.getString("age");
                     sex = userinfo.getString("gender");
                     sign = userinfo.getString("sign");
                     work = userinfo.getString("work");
-                    System.out.println(name+"   "+sex+"   "+work+"   "+sign);
+                    //System.out.println(name+"   "+sex+"   "+work+"   "+sign);
+                    editText0.setText(userinfo.getString("name"));
                     editText1.setText(userinfo.getString("age"));
                     editText2.setText(userinfo.getString("gender"));
                     editText3.setText(userinfo.getString("sign"));
@@ -161,7 +188,7 @@ public class infor extends Fragment implements TextWatcher {
     }
     public void changeinfo(String name1,String age,String sex1,String work1,String sign1)
     {
-        String url="http://10.2.228.208:8080/SSMDemo/usert/changeinfo.action";
+        String url="http://47.93.227.240:8080/SSMDemo/usert/changeinfo.action";
 
         final RequestParams requestParams=new RequestParams(url);
         requestParams.addBodyParameter("uname",name1);

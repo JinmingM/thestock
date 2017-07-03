@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.william.www.thestock.R;
+import com.william.www.thestock.SharedPreferencesHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +42,7 @@ public class chanpsw extends Fragment implements TextWatcher {
     private EditText edittext1;
     private FragmentManager fm;
     private FragmentTransaction ft;
+    private String id;
 
 
     public chanpsw() {
@@ -84,13 +86,15 @@ public class chanpsw extends Fragment implements TextWatcher {
         edittext1 =(EditText)view.findViewById(R.id.newpsw);
         edittext1.addTextChangedListener(this);
         Button button1 = (Button)view.findViewById(R.id.save);
+        SharedPreferencesHelper share = new SharedPreferencesHelper();
+        id = share.getValue(getContext(),"shared","id","");
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String url="http://10.2.228.208:8080/SSMDemo/usert/changepassword.action";
+                String url="http://47.93.227.240:8080/SSMDemo/usert/changepassword.action";
 
                 final RequestParams requestParams=new RequestParams(url);
-                requestParams.addBodyParameter("uid","13");
+                requestParams.addBodyParameter("uid",id);
                 requestParams.addBodyParameter("upwd",newpsw);
                 x.http().post(requestParams, new Callback.CommonCallback<String>() {
                     //成功返回的 类似于success:function
